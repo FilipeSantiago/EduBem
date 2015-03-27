@@ -1,0 +1,49 @@
+<?php
+	$conecta = new PDO('mysql:host=localhost; dbname=forum', 'root', 'filipe');
+	$limite = 7;
+	$pg = (isset($_GET['pg'])) ? (int)$_GET['pg'] : 1 ;
+	$inicio = ($pg * $limite) - $limite;
+	$sql = "SELECT * FROM Post ORDER BY idPost, data DESC LIMIT ".$inicio. ",". $limite;
+	$query = $conecta->query($sql);  
+	$linha = $query->fetch(PDO::FETCH_ASSOC);
+	while($linha = $query->fetch(PDO::FETCH_ASSOC)){
+		 $titulo = $linha['titulo'];
+		 $data = $linha['data'];
+		 $corpo = $linha['corpo'];
+    	 echo $titulo, ' <br /> Postado em: ', $data;
+    	 echo '<br /> <br />';
+    	 echo $corpo;
+    	 echo '<br /> <br /> <br />';
+	}
+
+	$sql_Total = 'SELECT idPost FROM Post';
+   
+	try{
+		 $query_Total = $conecta->query($sql_Total);  
+		  
+		 $query_result = $query_Total->fetchAll(PDO::FETCH_ASSOC);
+		  
+		 //conta quantos registros tem no banco de dados
+		 $query_count =  $query_Total->rowCount(PDO::FETCH_ASSOC);
+		 
+		 //calcula o total de paginas a serem exibidas
+		 $qtdPag = ceil($query_count/$limite);
+	  
+	}catch(PDOexception $error_Total){
+		 echo 'Erro ao retornar os Dados. '.$error_Total->getMessage();
+	}
+
+	echo '  <a href="paginacao.php?pg=1">PRIMEIRA PAGINA</a>   ';
+    if($qtdPag > 1 && $pg<= $qtdPag){
+	    for($i=1; $i <= $qtdPag; $i++){
+	              
+	    	if($i == $pg){      
+	            echo $i;
+	        }else{  
+	         	echo "<a href='paginacao.php?pg=$i'>".' '.$i.' '."</a>";
+	        }
+        }
+     }
+       echo "    <a href=\"paginacao.php?pg=$qtdPag\">ULTIMA PAGINA</a>  ";
+	
+?>
