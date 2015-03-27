@@ -16,7 +16,7 @@
 		}
 		else {
 			require('View/cadastroUsuario.html');
-			echo '<br/> <center>  Login ja em uso </center>'; 
+			echo '<br/> <center> Login ja em uso </center>'; 
 		}
 		
 	?>
